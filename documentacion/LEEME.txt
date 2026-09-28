@@ -1,0 +1,2 @@
+Capturas de prompts / links a conversaciones con IA / paginas consultadas.
+Nombrar cada archivo con el apellido del integrante (ej: Perez_prompt1.png).
