@@ -4,26 +4,22 @@ Simulación por turnos en consola, hecha en Java, con plantas, conejos y lobos. 
 
 ## Integrantes y rol de cada uno
 
+## Autor
+
 | Integrante | Parte a cargo | Archivos |
 |---|---|---|
-| _(Nombre 1)_ | Jerarquía base e interfaces | `Entidad`, `Animal`, `Reproducible`, `Mortal`, `Peligroso`, `Clima` |
-| _(Nombre 2)_ | Entidades concretas | `Planta`, `PlantaVenenosa`, `Conejo`, `Lobo` |
-| _(Nombre 3)_ | Lógica del ecosistema | `Ecosistema` (turno, agregarEntidad sobrecargado, colapso) |
-| _(Nombre 4)_ | Consola y reporte | `Simulador`, `Main`, `generarReporteFinal()` + estadísticas bonus |
-
-> Completen la tabla con los nombres reales. Cada integrante tiene que hacer commits sobre sus archivos: si alguien no tiene commits, pierde el 50% de la nota.
+| Matias Carnielli | Proyecto completo (trabajo individual) | Todas las clases |
 
 ## Cómo ejecutarlo
 
-**Requisitos:** JDK 11 o superior (probado con JDK 21) y Apache NetBeans 17 o superior. No usa librerías externas.
+**Requisitos:** JDK 11 o superior (probado con JDK 21). No usa librerías externas.
 
 **En NetBeans:** `File > Open Project` → elegir la carpeta `SimuladorEcosistema` (NetBeans la reconoce como proyecto Maven) → `Run Project` (F6). La clase principal es `simulador.Main`.
 
-**Por consola:**
-```bash
-mvn compile exec:java
-# o sin Maven:
-javac -d out $(find src -name "*.java")
+**Por consola (Windows, cmd):**
+```
+dir /s /b src\*.java > fuentes.txt
+javac -encoding UTF-8 -d out @fuentes.txt
 java -cp out simulador.Main
 ```
 
