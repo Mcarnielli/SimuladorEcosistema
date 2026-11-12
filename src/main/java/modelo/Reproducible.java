@@ -1,6 +1,5 @@
-package simulador.interfaces;
+package modelo;
 
-import simulador.ecosistema.Ecosistema;
 
 /**
  * Comportamiento de las entidades que pueden reproducirse (Planta y Conejo).

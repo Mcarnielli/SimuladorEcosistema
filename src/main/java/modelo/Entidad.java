@@ -1,6 +1,4 @@
-package simulador.modelo;
-
-import simulador.ecosistema.Ecosistema;
+package modelo;
 
 /**
  * Clase base abstracta de todas las entidades del ecosistema.
@@ -27,8 +25,11 @@ public abstract class Entidad {
     /** Lo que hace la entidad en su turno. */
     public abstract void actuar(Ecosistema eco);
 
-    /** Imprime el estado de la entidad por consola. */
-    public abstract void mostrarEstado();
+    /**
+     * Devuelve un texto corto con el estado particular de la entidad
+     * (en la IE1 lo imprimía; ahora el modelo no imprime nada).
+     */
+    public abstract String mostrarEstado();
 
     /** Nombre del tipo ("Planta", "Conejo", "Lobo"...). */
     public abstract String getTipo();

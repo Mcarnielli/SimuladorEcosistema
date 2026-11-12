@@ -1,8 +1,5 @@
-package simulador.modelo;
+package modelo;
 
-import simulador.ecosistema.Ecosistema;
-import simulador.interfaces.Mortal;
-import simulador.interfaces.Reproducible;
 
 /**
  * Planta: gana energía por fotosíntesis y se reproduce según el clima.
@@ -64,7 +61,7 @@ public class Planta extends Entidad implements Reproducible, Mortal {
             Planta brote = eco.crearPlanta(ENERGIA_BROTE);
             eco.registrarNacimiento(brote);
             eco.registrarEvento(getDescripcion() + " se reprodujo -> nueva planta '"
-                    + brote.getNombre() + "' (energia: " + (int) brote.getEnergia() + ")");
+                    + brote.getNombre() + "' (energía: " + (int) brote.getEnergia() + ")");
         }
     }
 
@@ -77,19 +74,13 @@ public class Planta extends Entidad implements Reproducible, Mortal {
 
     /** Sobreescribe el default de Mortal para que el mensaje tenga sentido en una planta. */
     @Override
-    public boolean verificarMuerte() {
-        if (estaVivo() && getEnergia() <= 0) {
-            morir();
-            System.out.println("  " + getDescripcion() + " se seco (sin energia)");
-            return true;
-        }
-        return false;
+    public String getMensajeMuerte() {
+        return getDescripcion() + " se secó (sin energía)";
     }
 
     @Override
-    public void mostrarEstado() {
-        System.out.printf("  %-16s | tamanio: %d | energia: %5.1f | edad: %d%n",
-                getNombre(), tamanio, getEnergia(), getEdad());
+    public String mostrarEstado() {
+        return "Tamaño " + tamanio;
     }
 
     public int getTamanio() {

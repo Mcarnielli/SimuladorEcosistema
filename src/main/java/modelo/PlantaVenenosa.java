@@ -1,6 +1,4 @@
-package simulador.modelo;
-
-import simulador.interfaces.Peligroso;
+package modelo;
 
 /**
  * BONUS: planta venenosa. Se guarda en el mismo ArrayList<Planta> que las plantas
@@ -32,8 +30,7 @@ public class PlantaVenenosa extends Planta implements Peligroso {
     }
 
     @Override
-    public void mostrarEstado() {
-        super.mostrarEstado();
-        System.out.println("    (venenosa)");
+    public String mostrarEstado() {
+        return super.mostrarEstado() + " · VENENOSA";
     }
 }

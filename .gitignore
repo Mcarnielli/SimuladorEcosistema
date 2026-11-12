@@ -1,0 +1,6 @@
+target/
+out/
+nbproject/private/
+fuentes.txt
+# archivo de guardado que genera la aplicación al usarla
+datos/

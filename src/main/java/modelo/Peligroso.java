@@ -1,4 +1,4 @@
-package simulador.interfaces;
+package modelo;
 
 /**
  * BONUS: entidades peligrosas del ecosistema (Lobo y PlantaVenenosa).

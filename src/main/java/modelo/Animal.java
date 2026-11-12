@@ -1,7 +1,4 @@
-package simulador.modelo;
-
-import simulador.ecosistema.Ecosistema;
-import simulador.interfaces.Mortal;
+package modelo;
 
 /**
  * Capa intermedia de herencia entre Entidad y los animales concretos.
@@ -20,9 +17,9 @@ public abstract class Animal extends Entidad implements Mortal {
     /** Cada animal come a su manera. */
     public abstract void comer(Ecosistema eco);
 
-    /** Método concreto compartido por Conejo y Lobo. */
-    public void moverse() {
-        System.out.println("  " + getDescripcion() + " se desplazo buscando alimento (velocidad: " + velocidad + ")");
+    /** Método concreto compartido por Conejo y Lobo: describe el desplazamiento. */
+    public String moverse() {
+        return getDescripcion() + " se desplazó (velocidad " + velocidad + ")";
     }
 
     public int getVelocidad() {

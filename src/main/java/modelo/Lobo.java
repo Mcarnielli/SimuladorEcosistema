@@ -1,7 +1,5 @@
-package simulador.modelo;
+package modelo;
 
-import simulador.ecosistema.Ecosistema;
-import simulador.interfaces.Peligroso;
 
 /**
  * Lobo: caza conejos. No implementa Reproducible (los lobos no se reproducen).
@@ -55,8 +53,7 @@ public class Lobo extends Animal implements Peligroso {
     public void comer(Ecosistema eco) {
         Conejo presa = eco.buscarConejoVivo();
         if (presa == null) {
-            moverse();
-            eco.registrarEvento(getDescripcion() + " no encontro conejos para cazar");
+            eco.registrarEvento(moverse() + " y no encontró conejos para cazar");
             return;
         }
         double prob = calcularProbabilidadCaza(eco.getClimaActual());
@@ -64,10 +61,10 @@ public class Lobo extends Animal implements Peligroso {
             presa.morir();
             ganarEnergia(GANANCIA_CAZA);
             exitosCaza++;
-            eco.registrarEvento(getDescripcion() + " cazo a " + presa.getDescripcion()
-                    + " (+" + (int) GANANCIA_CAZA + " energia) [cacerias: " + exitosCaza + "]");
+            eco.registrarEvento(getDescripcion() + " cazó a " + presa.getDescripcion()
+                    + " (+" + (int) GANANCIA_CAZA + " energía) [cacerías: " + exitosCaza + "]");
         } else {
-            eco.registrarEvento(getDescripcion() + " fallo la caza (prob. de exito: "
+            eco.registrarEvento(getDescripcion() + " falló la caza (prob. de éxito: "
                     + Math.round(prob * 100) + "%)");
         }
     }
@@ -79,9 +76,8 @@ public class Lobo extends Animal implements Peligroso {
     }
 
     @Override
-    public void mostrarEstado() {
-        System.out.printf("  %-16s | energia: %5.1f | edad: %d | cacerias exitosas: %d%n",
-                getNombre(), getEnergia(), getEdad(), exitosCaza);
+    public String mostrarEstado() {
+        return "Cacerías exitosas: " + exitosCaza;
     }
 
     public int getExitosCaza() {
