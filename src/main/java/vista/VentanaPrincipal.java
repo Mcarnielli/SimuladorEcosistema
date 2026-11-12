@@ -694,8 +694,9 @@ public class VentanaPrincipal extends javax.swing.JFrame implements VistaSimulac
         });
         panelBotonesSimulacion.add(btnVerReporte);
 
-        btnAvanzarTurno.setText("Avanzar turno  ▶");
         btnAvanzarTurno.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        btnAvanzarTurno.setText("Avanzar turno  ");
+        btnAvanzarTurno.setToolTipText("");
         btnAvanzarTurno.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAvanzarTurnoActionPerformed(evt);

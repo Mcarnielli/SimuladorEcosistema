@@ -653,7 +653,7 @@
             <Container class="javax.swing.JScrollPane" name="scrollEventos">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="javax.swing.BorderFactory.createTitledBorder(&quot;Eventos del último turno&quot;)" type="code"/>
+                  <Connection code="javax.swing.BorderFactory.createTitledBorder(&quot;Eventos del &#xfa;ltimo turno&quot;)" type="code"/>
                 </Property>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[470, 300]"/>
@@ -702,7 +702,7 @@
                       <Color blue="ff" green="ff" red="ff" type="rgb"/>
                     </Property>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="javax.swing.BorderFactory.createTitledBorder(&quot;Intervención del jugador (cada 3 turnos)&quot;)" type="code"/>
+                      <Connection code="javax.swing.BorderFactory.createTitledBorder(&quot;Intervenci&#xf3;n del jugador (cada 3 turnos)&quot;)" type="code"/>
                     </Property>
                   </Properties>
                   <Constraints>
@@ -881,10 +881,11 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="btnAvanzarTurno">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Avanzar turno  &#x25b6;"/>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Segoe UI" size="15" style="1"/>
                             </Property>
+                            <Property name="text" type="java.lang.String" value="Avanzar turno  "/>
+                            <Property name="toolTipText" type="java.lang.String" value=""/>
                           </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAvanzarTurnoActionPerformed"/>
@@ -1068,7 +1069,7 @@
                         <Container class="javax.swing.JScrollPane" name="scrollHistorial">
                           <Properties>
                             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                              <Connection code="javax.swing.BorderFactory.createTitledBorder(&quot;Población turno a turno&quot;)" type="code"/>
+                              <Connection code="javax.swing.BorderFactory.createTitledBorder(&quot;Poblaci&#xf3;n turno a turno&quot;)" type="code"/>
                             </Property>
                           </Properties>
                           <AuxValues>
@@ -1101,7 +1102,7 @@
                         <Container class="javax.swing.JScrollPane" name="scrollMaxMin">
                           <Properties>
                             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                              <Connection code="javax.swing.BorderFactory.createTitledBorder(&quot;Máximos y mínimos&quot;)" type="code"/>
+                              <Connection code="javax.swing.BorderFactory.createTitledBorder(&quot;M&#xe1;ximos y m&#xed;nimos&quot;)" type="code"/>
                             </Property>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                               <Dimension value="[400, 130]"/>
