@@ -1,2 +1,5 @@
-Capturas de prompts / links a conversaciones con IA / paginas consultadas.
-Nombrar cada archivo con el apellido del integrante (ej: Perez_prompt1.png).
+Documentación del uso de IA y del diseño (entrega individual)
+
+- Capturas de los prompts o links a las conversaciones completas con la IA.
+  Nombrar cada archivo con el apellido del integrante. Ejemplo: Carnielli_prompt1.png
+- Captura de las pantallas diseñadas en Figma. Ejemplo: Carnielli_figma_pantallas.png

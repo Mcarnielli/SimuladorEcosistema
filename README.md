@@ -1,98 +1,135 @@
-# Simulador de Ecosistema — 1° Instancia Evaluativa (Interfaz Gráfica)
+# Simulador de Ecosistema — versión Swing (2° Instancia Evaluativa, Interfaz Gráfica)
 
-Simulación por turnos en consola, hecha en Java, con plantas, conejos y lobos. El jugador configura el ecosistema inicial y cada 3 turnos puede intervenir: cambiar el clima o agregar entidades.
-
-## Integrantes y rol de cada uno
+Es el simulador de la IE1 (plantas, conejos y lobos que interactúan por turnos) convertido en una aplicación de escritorio con **Swing**. Está organizado en **MVC + DAO** y la simulación se **guarda en un archivo .txt** para poder retomarla al volver a abrir la aplicación.
 
 ## Autor
 
-| Integrante | Parte a cargo | Archivos |
-|---|---|---|
-| Matias Carnielli | Proyecto completo (trabajo individual) | Todas las clases |
+| Integrante | Rol |
+|---|---|
+| Matias Carnielli | Proyecto completo: diseño en Figma, modelo, DAO, controlador y vista (trabajo individual autorizado por la docente) |
+
+## Links
+
+- **Diseño en Figma:** https://www.figma.com/design/AV9zxMcmuW8AZZXFKSzbux/Simulador-Ecosistema-IE2 (prototipo navegable: Configuración → Simulación → Reporte)
+- **Video explicativo:** PEGAR_ACÁ_EL_LINK_DEL_VIDEO
 
 ## Cómo ejecutarlo
 
-**Requisitos:** JDK 11 o superior (probado con JDK 21). No usa librerías externas.
+- **JDK:** 11 o superior (probado con Temurin 21).
+- **NetBeans:** Apache NetBeans 25 (también funciona en versiones más nuevas).
+- **Librerías externas:** ninguna.
 
-**En NetBeans:** `File > Open Project` → elegir la carpeta `SimuladorEcosistema` (NetBeans la reconoce como proyecto Maven) → `Run Project` (F6). La clase principal es `simulador.Main`.
+Pasos:
 
-**Por consola (Windows, cmd):**
-```
-dir /s /b src\*.java > fuentes.txt
-javac -encoding UTF-8 -d out @fuentes.txt
-java -cp out simulador.Main
-```
+1. En NetBeans, andá a `File > Open Project` y elegí la carpeta del repositorio (es un proyecto Maven).
+2. Ejecutalo con `Run Project` (F6). La clase principal es `principal.Main`.
+
+La primera vez, Maven descarga sus plugins, así que necesita conexión a internet.
+
+La simulación se guarda en `datos/simulacion.txt`, dentro de la carpeta del proyecto (es una ruta relativa). Si el archivo no existe, la aplicación arranca en la pantalla de configuración. Si el archivo tiene datos inválidos, avisa con un mensaje y deja empezar una simulación nueva.
 
 ## Estructura del proyecto
 
 ```
-src/main/java/simulador/
-├── Main.java                 → punto de entrada
-├── Simulador.java            → menús con Scanner, loop principal e intervenciones
-├── ecosistema/
-│   └── Ecosistema.java       → listas de entidades, procesarTurno(), estadísticas y reporte
-├── interfaces/
-│   ├── Reproducible.java     → reproducirse(), puedeReproducirse(), default intentarReproduccion()
-│   ├── Mortal.java           → estaVivo(), morir(), default verificarMuerte()
-│   └── Peligroso.java        → getNivelPeligro()   (BONUS)
-└── modelo/
-    ├── Clima.java            → enum con los 4 climas y sus efectos
-    ├── Entidad.java          → clase abstracta base
-    ├── Animal.java           → clase abstracta intermedia (moverse())
-    ├── Planta.java           → extends Entidad implements Reproducible, Mortal
-    ├── PlantaVenenosa.java   → extends Planta implements Peligroso (BONUS)
-    ├── Conejo.java           → extends Animal implements Reproducible
-    └── Lobo.java             → extends Animal implements Peligroso
-documentacion/                → capturas / links de prompts (entrega individual)
+src/main/java/
+├── principal/
+│   └── Main.java                → crea la vista, el DAO y el controlador, los conecta y muestra la ventana
+├── modelo/                      → reglas de la simulación (sin Swing, sin Scanner, sin System.out)
+│   ├── Entidad, Animal          → clases abstractas (herencia)
+│   ├── Planta, PlantaVenenosa, Conejo, Lobo
+│   ├── Reproducible, Mortal, Peligroso  → interfaces
+│   ├── Clima                    → enum con los 4 climas y sus efectos
+│   ├── Ecosistema               → procesa cada turno, guarda los eventos y aplica las reglas de intervención
+│   └── ReporteFinal             → datos del reporte, ya calculados por el modelo
+├── dao/
+│   ├── SimulacionDAO            → guarda y lee la simulación en datos/simulacion.txt
+│   └── DatosInvalidosException  → avisa al controlador cuando el archivo no sirve
+├── controlador/
+│   ├── ControladorSimulacion    → recibe las acciones de la vista, valida y coordina el modelo y el DAO
+│   ├── VistaSimulacion          → interfaz con lo que el controlador le pide a la vista
+│   └── DatosSimulacion, DatosReporte → datos ya preparados para mostrar
+└── vista/
+    └── VentanaPrincipal (.java + .form) → JFrame armado con el diseñador de NetBeans
+src/main/resources/vista/iconos/ → íconos de planta, conejo y lobo (ImageIcon)
 ```
 
-## Orden de cada turno (`Ecosistema.procesarTurno()`)
+### Qué hace cada capa
 
-1. **Plantas:** hacen fotosíntesis (+8) y se reproducen si tienen energía ≥ 40. La probabilidad base es 50% y se multiplica según el clima (en Invierno no se reproducen).
-2. **Conejos:** se aplica el efecto del clima, comen una planta viva al azar si tienen hambre (energía < 50) y, si no encuentran, pierden 15. Después intentan reproducirse: necesitan energía > 60 y otro conejo vivo.
-3. **Lobos:** intentan cazar un conejo al azar. **La probabilidad crece con la energía:** `0.05 + (energia/100) * 0.45`, con +20% en Invierno y limitada entre 5% y 90%.
-4. **Todas envejecen** (`envejecer()`: edad +1 y se descuenta la energía base de cada tipo).
-5. **Mueren las que quedaron sin energía** (`verificarMuerte()`, el método default de `Mortal`).
-6. Se muestra el estado. Cada 3 turnos aparece el menú de intervención.
+- **Modelo:** contiene las clases de la IE1 con su herencia, polimorfismo y encapsulamiento.
+  - `procesarTurno()` aplica las reglas y **devuelve la lista de eventos** del turno, en lugar de imprimirlos como en la IE1.
+  - `puedeIntervenir()`, `puedeAgregarLobo()` y `isFinalizada()` concentran las reglas del juego.
+  - `generarReporteFinal()` calcula todos los datos del reporte.
+- **DAO:** escribe y lee el archivo de texto.
+  - Formato: una línea por registro (`GENERAL`, `HISTORIAL`, `ENTIDAD`, `EVENTO`…) y los campos separados por `|`.
+  - Guarda primero en un archivo temporal y después lo reemplaza, para no perder el guardado anterior si algo falla.
+  - `guardar()` devuelve `true`/`false`, y `cargar()` lanza `DatosInvalidosException` si el archivo está dañado. El DAO no muestra mensajes.
+- **Controlador:** no tiene código Swing.
+  - Valida los datos del formulario: campos vacíos, que sean números y que estén dentro de los rangos.
+  - Le pide al modelo que procese el turno y al DAO que guarde.
+  - Le pasa a la vista los datos listos para mostrar, mediante la interfaz `VistaSimulacion`.
+- **Vista:** la arma el diseñador de NetBeans, con tres pantallas en un `CardLayout`: configuración, simulación y reporte.
+  - Tiene una barra de menú (`JMenuBar`) con Simulación y Reportes.
+  - Por código sólo carga datos en tablas, listas y combos, habilita o deshabilita componentes, cambia de pantalla y muestra mensajes con `JOptionPane`.
 
-## Cómo se cumplen los requisitos de POO
+### Flujo al presionar «Avanzar turno»
 
-| Requisito | Dónde |
-|---|---|
-| Entidad abstracta con métodos abstractos sobreescritos | `Entidad.actuar()`, `mostrarEstado()`, `getTipo()` → sobreescritos en Planta, Conejo y Lobo |
-| Animal como capa intermedia con método concreto | `Animal.moverse()`, usado por Conejo y Lobo |
-| Reproducible en Planta y Conejo, con polimorfismo | `Ecosistema.getReproducibles()` arma un `ArrayList<Reproducible>` con plantas y conejos y lo recorre una sola vez en `mostrarEstado()`. Además, `intentarReproduccion()` (default) se llama desde `actuar()` |
-| Mortal con método default aprovechado | `verificarMuerte()` se usa en el paso 5 sobre un `ArrayList<Mortal>`. Planta lo sobreescribe para cambiar el mensaje |
-| Encapsulamiento | Todos los atributos son `private` y los setters validan: energía entre 0 y 100, tamaño entre 1 y 5, edad ≥ 0, velocidad ≥ 1, peso > 0 |
-| Sobrecarga | `Ecosistema.agregarEntidad(String tipo)` y `agregarEntidad(String tipo, double energiaInicial)`. Las dos se usan desde el menú de intervención |
-| Colecciones | `ArrayList`, `LinkedHashMap` (contadores por tipo), historial `ArrayList<int[]>` |
+1. Vista → `controlador.avanzarTurno()`.
+2. Controlador → `ecosistema.procesarTurno()`, que devuelve los eventos.
+3. Controlador → `dao.guardar(ecosistema)`, que devuelve `true`/`false`. Si devuelve `false`, llama a `vista.mostrarError(...)`.
+4. Controlador → arma un `DatosSimulacion` y llama a `vista.actualizarSimulacion(...)`.
+5. Si la simulación terminó, el controlador avisa y llama a `vista.mostrarPantallaReporte(...)`.
 
-### Bonus implementados
-- **PlantaVenenosa:** el 15% de las plantas que se crean son venenosas. Se guardan en el mismo `ArrayList<Planta>` y el conejo la elige sin saberlo. `serComida()` devuelve −30.
-- **Estadísticas en tiempo real:** historial de población turno a turno, con el máximo y el mínimo de cada población en el reporte final.
-- **Interface Peligroso:** la implementan Lobo (nivel = 5 + 2×cacerías + energía/25) y PlantaVenenosa (nivel 3). El reporte las lista ordenadas de mayor a menor.
+## Funcionalidades
 
-### Climas
-Están implementados los 4 climas de la consigna (se pedía un mínimo de 2), en el enum `Clima`.
+- **Configuración:** formulario con plantas (5–30), conejos (2–15), lobos (1–5), clima y turnos (10–50). Los errores se muestran en rojo debajo del formulario, y la configuración se confirma antes de iniciar.
+- **Simulación:**
+  - Contadores con íconos: turno, clima, plantas, conejos y lobos.
+  - Tabla de entidades vivas, donde las plantas venenosas aparecen diferenciadas.
+  - Lista de eventos del turno.
+- **Intervención cada 3 turnos:** cambiar el clima o agregar una entidad, con energía opcional (es la sobrecarga de `agregarEntidad`). Se permite una acción por intervención y un máximo de 5 lobos en total. El panel indica si se puede intervenir y cuándo es la próxima intervención.
+- **Guardado y retoma:** se guarda automáticamente después de cada acción. Al abrir la aplicación, la simulación sigue donde estaba. «Nueva simulación» pide confirmación si hay una en curso.
+- **Reporte final** en pestañas:
+  - Resumen: causa de fin, turno de mayor actividad, el más longevo de cada tipo y el lobo con más cacerías.
+  - Nacimientos y muertes por tipo.
+  - Historial con los máximos y mínimos de cada población.
+  - Entidades peligrosas ordenadas por nivel.
 
-## Decisiones de diseño y desafíos encontrados
+## Diseño en Figma (UX/UI)
 
-- **Colapso inmediato:** en las primeras pruebas el ecosistema colapsaba en 3 turnos, porque cada conejo comía una planta por turno y cada lobo cazaba con mucha probabilidad. Lo resolvimos así:
-  - los conejos sólo comen si tienen hambre (energía < 50);
-  - se bajó la probabilidad de caza;
-  - se agregó una capacidad máxima del terreno: 40 plantas y 30 conejos.
+**Persona y escenario.** Lucía, 20 años, estudia Biología y usa la aplicación para ver cómo cambian las poblaciones según el clima. La usa en la computadora de la facultad, en sesiones cortas, y necesita poder cerrarla y seguir otro día.
 
-  Todos los valores son constantes `public static final`, así que se pueden ajustar fácilmente.
-- **Modificar una lista mientras se recorre:** cuando nace una entidad durante el recorrido se produce una `ConcurrentModificationException`. Por eso se recorre una copia (`new ArrayList<>(plantas)`) y las entidades muertas se eliminan al final del turno (`limpiarMuertos()`).
-- **Límite de 5 lobos:** se cuentan todos los lobos creados en la simulación (los iniciales más los agregados), no sólo los vivos.
-- **Entidad más longeva:** se guardan todas las entidades que existieron (`todasLasEntidades`), así el reporte puede considerar también las que murieron.
-- En Sequía e Invierno el ecosistema colapsa rápido si no se interviene. Es intencional: son los climas difíciles.
+**Pantallas del diseño:**
+- configuración (vacía y con errores);
+- simulación (sin intervención y con la intervención habilitada);
+- confirmación de una acción;
+- error al cargar el archivo;
+- reporte final.
+
+**Decisiones de diseño justificadas:**
+
+1. **Visibilidad del estado del sistema (Nielsen):** los contadores de turno, clima y poblaciones están siempre arriba, y cada acción deja un mensaje de estado abajo a la izquierda.
+2. **Prevención de errores:** los rangos se muestran al lado de cada campo. Los botones de intervención se deshabilitan cuando no se puede intervenir, y las acciones importantes piden confirmación.
+3. **Jerarquía visual y ley de proximidad (Gestalt):** la acción principal («Avanzar turno» o «Iniciar simulación») es el botón más grande y está abajo a la derecha. Los controles de la intervención están agrupados en un mismo panel con título.
+4. **Consistencia:** las tres pantallas comparten el encabezado verde, los colores (verde para lo positivo, rojo para los errores, gris para la ayuda) y la ubicación de los botones.
+5. **Reconocer antes que recordar:** se usan íconos para diferenciar plantas, conejos y lobos, y el reporte se divide en pestañas con nombres claros.
+
+_(Si algo cambió entre el diseño y la aplicación, explicarlo acá.)_
+
+## Desafíos encontrados
+
+- **Sacar todo el `System.out` del modelo.** En la IE1, `Mortal.verificarMuerte()`, `Animal.moverse()` y `mostrarEstado()` imprimían por consola. Ahora devuelven texto: el `Ecosistema` guarda los eventos en una lista y el controlador se la pasa a la vista.
+- **Guardar lo necesario para retomar sin perder el reporte.** Se guardan todas las entidades que existieron (incluidas las muertas, para calcular la más longeva), los contadores de nacimientos, muertes y agregados, el historial y los eventos del último turno.
+- **Archivo dañado o inexistente.** El DAO valida la cabecera, la marca `FIN` y cada campo. Si algo falla, el controlador muestra el error y la aplicación sigue funcionando.
+- **Que el controlador no dependa de Swing.** Se resolvió con la interfaz `VistaSimulacion`: el controlador sólo conoce esa interfaz, y `VentanaPrincipal` la implementa.
 
 ## Uso de IA / herramientas externas
 
-> **Obligatorio y de cada integrante.** Cada uno pega acá el link a sus conversaciones completas con la IA y/o las páginas que consultó, o deja las capturas en `documentacion/` con su nombre.
+- **Matias Carnielli:** el proyecto se hizo con ayuda de Claude (IA de Anthropic), que se usó para:
+  - adaptar el código de la IE1 a MVC + DAO;
+  - generar la vista y el archivo `.form`;
+  - redactar este README.
 
-- _(Matias Carnielli )_: (https://claude.ai/chat/751a6b35-a997-8790-ac3e-57131c955bde) 
-- _(Nombre 2)_: …
-- _(Nombre 3)_: …
-- _(Nombre 4)_: …
+  - generar la base de las pantallas de Figma (en SVG), que después importé, ordené, edité y conecté como prototipo.
+
+  Revisé, ejecuté y probé el código.
+  - Conversación completa: PEGAR_ACÁ_EL_LINK
